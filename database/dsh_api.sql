@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 30, 2025 at 03:53 PM
+-- Generation Time: Apr 30, 2025 at 04:00 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -61,7 +61,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
 (1, 'john_doe', 'john@example.com', '$2b$10$0Ji0OB.quQeiJ7EkfagwvevjrudqeRqzs5JlHjiImSUZ1/hXhxSJe', 'user'),
 (2, 'tesz', 'tesz@gmail.com', '$2b$10$81o62qeXdd0/dlfxZiNyROSOLqbtkLIK/iwdyKLlYFnMpyUV.R1.u', 'admin'),
-(3, 'aswe', 'aswe@aswe.com', '$2b$10$yQxm7QCQorW6.BA9gLuhPecdrixr4r.XeEI0BWcOBYrCNzoncbhU6', 'user');
+(3, 'aswe', 'aswe@aswe.com', '$2b$10$yQxm7QCQorW6.BA9gLuhPecdrixr4r.XeEI0BWcOBYrCNzoncbhU6', 'user'),
+(4, 'dsh', 'dsh@gmail.com', '$2b$10$pTqROXScT9CVCAkI420U5.t7HklhDa98VhzKtoh9v/QSPVN/9d.oS', 'admin');
 
 --
 -- Indexes for dumped tables
@@ -93,7 +94,7 @@ ALTER TABLE `posts`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
