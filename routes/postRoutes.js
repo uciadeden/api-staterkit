@@ -7,17 +7,42 @@ const checkRole = require('../middleware/checkRole'); // Pastikan kamu sudah mem
 
 // Get all posts
 router.get('/', authMiddleware, checkRole("admin"),(req, res) => {
-  const query = 'SELECT id, name, description FROM posts';
-  req.db.query(query, (err, posts) => {
+  const page = parseInt(req.query.page) || 1; // default page = 1
+  const limit = parseInt(req.query.limit) || 10; // default limit = 10
+  // Hitung offset
+  const offset = (page - 1) * limit;
+  
+  // Query untuk mengambil data dengan limit dan offset
+  const query = 'SELECT id, name, description FROM posts WHERE deleted=0 LIMIT ? OFFSET ?';
+
+  req.db.query(query, [limit, offset], (err, posts) => {
     if (err) return res.status(500).json({ error: 'Failed to fetch posts' });
-    res.json(posts);
+    
+    // Hitung total jumlah post untuk menentukan jumlah halaman
+    const countQuery = 'SELECT COUNT(*) AS total FROM posts WHERE deleted=0';
+    req.db.query(countQuery, (err, countResult) => {
+      if (err) return res.status(500).json({ error: 'Failed to fetch post count' });
+
+      const totalPosts = countResult[0].total;
+      const totalPages = Math.ceil(totalPosts / limit); // Total halaman
+
+      res.json({
+        data: posts,
+        pagination: {
+          totalPosts,
+          totalPages,
+          currentPage: page,
+          perPage: limit,
+        },
+      });
+    });
   });
 });
 
 // Get post by ID
 router.get('/:id', authMiddleware, (req, res) => {
   const { id } = req.params;  // Mengambil ID dari parameter URL
-  const query = 'SELECT id, name, description FROM posts WHERE id = ?';
+  const query = 'SELECT id, name, description FROM posts WHERE id = ? AND deleted=0';
 
   req.db.query(query, [id], (err, post) => {
     if (err) return res.status(500).json({ error: 'Failed to fetch post' });
@@ -57,7 +82,7 @@ router.put('/:id', authMiddleware, (req, res) => {
   const { id } = req.params;
   const { name, description } = req.body;
 
-  const query = 'UPDATE posts SET name = ?, description = ? WHERE id = ?';
+  const query = 'UPDATE posts SET name = ?, description = ? WHERE id = ? AND deleted=0';
   req.db.query(query, [name, description, id], (err, result) => {
     if (err) return res.status(500).json({ error: 'Failed to update post' });
     res.json({ message: 'Post updated' });
@@ -67,7 +92,7 @@ router.put('/:id', authMiddleware, (req, res) => {
 // Delete post
 router.delete('/:id', authMiddleware, (req, res) => {
   const { id } = req.params;
-  const query = 'DELETE FROM posts WHERE id = ?';
+  const query = 'UPDATE posts SET deleted=1 WHERE id = ?';
 
   req.db.query(query, [id], (err, result) => {
     if (err) return res.status(500).json({ error: 'Failed to delete post' });

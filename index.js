@@ -36,17 +36,17 @@ app.use((req, res, next) => {
   next();
 });
 
-const checkRole = (role) => {
-  return (req, res, next) => {
-    const userRole = req.user.role; // role yang didapat dari JWT atau session
+// const checkRole = (role) => {
+//   return (req, res, next) => {
+//     const userRole = req.user.role; // role yang didapat dari JWT atau session
     
-    if (userRole !== role) {
-      return res.status(403).json({ error: 'Forbidden: Insufficient role' });
-    }
+//     if (userRole !== role) {
+//       return res.status(403).json({ error: 'Forbidden: Insufficient role' });
+//     }
 
-    next(); // Jika role cocok, lanjutkan ke endpoint berikutnya
-  };
-};
+//     next(); // Jika role cocok, lanjutkan ke endpoint berikutnya
+//   };
+// };
 
 // Routes
 app.use('/api/auth', authRoutes);
